@@ -21,6 +21,8 @@ V1.0
 ## Authors
 * **Derry Everson**
 
-### Desktop View:
-![GitHub Logo](/images/)
+### Preview:
+![GitHub Logo](/images/currentTickets.PNG)
+
+![GitHub Logo](/images/createTicket.PNG)
 
