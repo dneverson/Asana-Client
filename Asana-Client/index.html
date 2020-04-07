@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--
+/*=========================================================================
+* @author Derry Everson
+*========================================================================*/
+-->
+<html lang="en" dir="ltr" ng-app="AsanaApp">
+<head>
+  <title>Issue and Request Form</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=8,IE=9">
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="CACHE-CONTROL" content="NO-CACHE, no-store, must-revalidate">
+  <meta http-equiv="Expires" content="-1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../HtmlLibraries/bootstrap/4.2.1/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../HtmlLibraries/fontawesome/4.7.0/all.css"/>
+
+  <link rel="stylesheet" href="css/Asana.css">
+  <link rel="stylesheet" href="css/bootstrap-toggle.min.css">
+
+  <!-- JS -->
+  <script src="../HtmlLibraries/jquery/js/3.3.1/jquery.min.js"></script>
+  <script src="../HtmlLibraries/angularjs/1.7.8/angular.min.js"></script>
+  <script src="../HtmlLibraries/popper/popper.min.js"></script>
+  <script src="../HtmlLibraries/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+  <script src="../HtmlLibraries/centricity/external_Functions.js"></script>
+  <script src="../HtmlLibraries/centricity/MEL_Functions.js"></script>
+  <script src="js/AsanaController.js"></script>
+  <script src="js/bootstrap-toggle.min.js"></script>
+  <!-- <script src="js/AsanaNode.js"></script> -->
+</head>
+
+<body id="AsanaCtrl" ng-controller="AsanaCtrl">
+
+  <!--==== Header ====-->
+  <header class="text-center mt-2 mb-3">
+    <strong>
+      <h1 class="d-inline">Issue / Request Form </h1>
+      <h5 class="d-inline"> V1.0</h5>
+    </strong>
+  </header>
+  <hr>
+
+  <!--==== START Current Issues Container ====-->
+  <div ng-if="true">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Current Tickets</h3>
+        </div>
+        <div class="col-sm-12">
+
+          <!--==== START Outer Accordion ====-->
+          <div class="accordion" id="accordionOne">
+            <div class="card" ng-repeat="(key, section) in data track by $index" ng-init="getTasks(section)" ng-hide="section.tasks.length<1" >
+              <div class="card-header" id="heading{{$index}}">
+                <h2 class="mb-0">
+                  <button
+                  class="btn btn-link w-100 text-left"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#collapse{{$index}}"
+                  aria-expanded="false"
+                  aria-controls="collapse{{$index}}"
+                  >
+                    {{section.name}} <i class="fa fa-chevron-right float-right align-middle"></i><i class="fa fa-chevron-down float-right align-middle"></i>
+                  </button>
+                </h2>
+              </div> <!-- End of Card-Header -->
+              <div id="collapse{{$index}}" class="collapse" aria-labelledby="heading{{$index}}" data-parent="#accordionOne">
+                <div class="card-body">
+
+                  <!--==== START Inner Accordion ====-->
+                  <div class="accordion" id="accordionTwo">
+                    <div class="card" ng-repeat="(key, task) in section.tasks track by $index" ng-init="getTaskInfo(task)">
+                      <div class="card-header" id="heading{{$parent.$index}}{{$index}}">
+                        <div class="mb-0">
+                          <button
+                          class="btn btn-link w-100 text-left"
+                          type="button" data-toggle="collapse"
+                          data-target="#collapse{{$parent.$index}}{{$index}}"
+                          aria-expanded="false"
+                          aria-controls="collapse{{$parent.$index}}{{$index}}"
+                          ng-class="{'color-green':task.info.completed, 'color-red':task.info.custom_fields[0].enum_value.name=='High'&&!task.info.completed, 'color-yellow':task.info.custom_fields[0].enum_value.name=='Medium'&&!task.info.completed, 'color-grey':task.info.custom_fields[0].enum_value.name=='Low'&&!task.info.completed}"
+                          >
+                            {{task.name}} <span ng-if="task.info.custom_fields[0].enum_value.name">({{task.info.custom_fields[0].enum_value.name}})</span><i class="fa fa-chevron-right float-right align-middle"></i><i class="fa fa-chevron-down float-right align-middle"></i>
+                          </button>
+                        </div>  <!-- End of DIV-MB0 -->
+                      </div> <!-- End of Card-Header -->
+                      <div id="collapse{{$parent.$index}}{{$index}}" class="collapse" aria-labelledby="heading{{$parent.$index}}{{$index}}" data-parent="#accordionTwo">
+                        <div class="card-body">
+                          <p class="mb-1"
+                          ng-repeat="custfield in task.info.custom_fields"
+                          ng-if="custfield.text_value||custfield.number_value||custfield.enum_value.name"
+                          >
+                            <strong>{{custfield.name}}</strong>: {{custfield.text_value}}{{custfield.number_value}}{{custfield.enum_value.name}}
+                          </p>
+                          <p>
+                            <strong>Notes</strong>: <pre style="white-space: pre-wrap">{{task.info.notes}}</pre>
+                          </p>
+                          <p>
+                            <button class="btn btn-danger" ng-if="!task.reported && !task.info.completed" ng-click="report(task)" type="button"><span class="fas fa-exclamation-triangle"></span> Report Same Isssue</button>
+                            <div class="alert alert-success alert-dismissible fade show" ng-if="task.reported" role="alert">
+                              <strong>Issue has been updated!</strong> Thank you for your valuable feedback
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          </p>
+                        </div> <!-- End of Inner Card-Body -->
+                      </div> <!-- End of Inner Collapse -->
+                    </div> <!-- End of Inner Card -->
+                  </div> <!-- End of Inner Accordion -->
+                  <!--==== END Inner Accordion ====-->
+
+                </div> <!-- End of Outer Card-Body -->
+              </div> <!-- End of Outer Collapse -->
+            </div> <!-- End of Outer Card -->
+          </div> <!-- End of Outer Accordion -->
+          <!--==== END Outer Accordion ====-->
+
+        </div> <!-- End of Col-SM-12 -->
+        <div class="col-sm-12 mt-3 mb-3" ng-hide="form.show&&!form.submitted">
+          Dont see your issue?
+          <button type="button" class="btn btn-sm btn-primary" ng-click="resetForm()">Create a Ticket</button>
+        </div>
+      </div> <!-- End of Row -->
+    </div> <!-- End of Container -->
+  </div> <!-- End of NG-IF -->
+  <!--==== END Current Issues Container ====-->
+
+  <!--==== START Report Issues Container ====-->
+  <div ng-if="true" ng-hide="!form.show">
+    <div class="container mt-4">
+      <div class="row pr-3 pl-3">
+        <div class="col-sm-12">
+          <form class="needs-validation mx-auto" ng-init="form" novalidate>
+            <div class="form-group mb-3">
+                          <h3>Create a Ticket</h3>
+            </div>
+
+            <div class="form-group">
+              <label for="requestType" style="display: block">Request Type</label>
+              <input id="requestType" type="checkbox" data-toggle="toggle" data-on="Request" data-off="Issue" data-onstyle="primary" data-offstyle="danger" data-size="small" ng-model="form.isRequest">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-5">
+                <label for="inputEncounterType">Encounter Type</label>
+                <select id="inputEncounterType" class="form-control" ng-model="form.encounter" required>
+                  <option selected></option>
+                  <option ng-repeat="encounter in encounterTypes">{{encounter}}</option>
+                </select>
+                <div class="valid-feedback">
+                  Looks good!
+                </div> <!-- End of Valid Feedback -->
+                <div class="invalid-feedback">
+                  Please choose an encounter.
+                </div> <!-- End of Invalid Feedback -->
+              </div>
+              <div class="form-group col-md-7">
+                <label for="inputForm">Form</label>
+                <input type="text" class="form-control" id="inputForm"  ng-model="form.formName" placeholder="Example: Vitals, HPI, ROS, A/P, VBR, QMAF" required>
+                <div class="valid-feedback">
+                  Looks good!
+                </div> <!-- End of Valid Feedback -->
+                <div class="invalid-feedback">
+                  Please fill out this field.
+                </div> <!-- End of Invalid Feedback -->
+              </div> <!-- End of Form-Group-->
+            </div> <!-- End of Form-Row -->
+
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">Description of Issue/Request</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1"  ng-model="form.description" rows="4" minlength="40" placeholder="Example: When filling out the sequential BP and selecting the 'Use this BP' button, the 'Blood Pressure (mm Hg)' fields are not populated" style="white-space: pre-wrap" required></textarea>
+              <div class="valid-feedback">
+                Looks good!
+              </div> <!-- End of Valid Feedback -->
+              <div class="invalid-feedback">
+                You must have 40 characters in the description.
+              </div> <!-- End of Invalid Feedback -->
+            </div> <!-- End of Form-Group -->
+
+            <div class="form-group color-red">
+              <p class="p-2">
+                <small>
+                  "Please be as descriptive as possible.
+                  The more details provided the better we can assist you.
+                  Vague responses will delay the process and/or be ignored.
+                  Please <u>DO NOT provide ANY HPI</u>"
+                </small>
+              </p>
+            </div> <!-- End of Form-Group-->
+
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                <label class="form-check-label" for="invalidCheck">
+                  Agree that you did <u>NOT</u> include any HPI in this request.
+                </label>
+                <div class="invalid-feedback ">
+                  You must agree before submitting.
+                </div> <!-- End of Invalid Feedback -->
+              </div> <!-- End of Form-Check -->
+            </div> <!-- End of Form-Group -->
+
+            <button type="submit" class="btn btn-primary" ng-init="form.btnTxt='Submit'"ng-disabled="form.submitted">{{form.btnTxt}}</button>
+          </form>
+        </div>
+
+        <div class="alert alert-success alert-dismissible fade show" ng-if="form.submitted" role="alert">
+          <strong>You have successfully submitted your ticket!</strong> Thank you for your valuable feedback
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+      </div> <!-- End of Row -->
+    </div> <!-- End of Container -->
+  </div> <!-- End of NG-IF -->
+  <!--==== END Report Issues Container====-->
+
+</body>
+</html>
