@@ -22,12 +22,11 @@ app.controller("AsanaCtrl", function($scope, $http ){
     url: "https://app.asana.com/api/1.0/",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer 0/0000000000000000000000000000",
+      "Authorization": "Bearer 0/7b572517147f260239215de94fba8a30",
       "Accept": "application/json"
     },
     data: {}
   };
-  $scope.form = {};
   $scope.encounterTypes = ["Allergy","Appt Status","Behavioral Health","Care Management","Clinical List Update","Coumadin Clinic","Dermatology","Dexa Report","Diabetic Foot Disease Screening","EKG Interpretation Report","ENT"," eSM Rx Refill","Express Care","Family Practice","Foot & Ankle Surgery","Gynecology","Immunizations","Internal Medicine","MCR - Medicare Visit","Medical Records Update","Nurse Only","Nursing Home Facility Visit","Nutritional Education","OB Encounter","Occupational Medicine","On Call","OOC Billing","OOC Order Form (All)","Opioid Treatment","Pain Management","Pediatric Primary Care","Peds Sports Exam","Phone Note","Portal Message","Post Partum","PPD Screening","Preauthorization","Pre-Operative Patient Information","QMAF","Radiology","Referrals","RS Order","Rx Refill"," SOAP Note","Sports Physical","TeleMedicine","UBA","Urology"];
 
   $scope.getTasks = function(obj){
@@ -40,7 +39,19 @@ app.controller("AsanaCtrl", function($scope, $http ){
     updateTaskInformation(obj);
   };
   $scope.resetForm = function(){
-    $scope.form = {encounter:"",formName:"",description:"",submitted:false,btnTxt:"Submit",show:true};
+    $scope.form = {encounter:{val:""},formName:{val:""},description:{val:""},btn:{val:"Submit", status: false},show:false,success:false};
+  };
+  $scope.validateForm = function(){
+    var valid = 0;
+    var form = $scope.form;
+    if(form.encounter.val){valid++;form.encounter.valid=1;}else{form.encounter.valid=0;}
+    if(form.formName.val){valid++;form.formName.valid=1;}else{form.formName.valid=0;}
+    if(form.description.val){
+      if(form.description.val.length >= 40){valid++;form.description.valid=1;}
+    }else{form.description.valid=0;}
+    if(form.agreed){valid++}else{}
+    if(valid==4){form.btn.status=0}else{form.btn.status=1}
+    try{$scope.$digest()}catch(e){}
   };
 
   /*=======================================================================*
@@ -50,9 +61,9 @@ app.controller("AsanaCtrl", function($scope, $http ){
     var md = getInfo();
     var date = new Date();
     var type = $scope.form.isRequest?"Request":"Issue"
-    var title = type+": "+$scope.form.encounter+" - "+$scope.form.formName+"";
+    var title = type+": "+$scope.form.encounter.val+" - "+$scope.form.formName.val+"";
     var username = md.username;
-    var notes = ""+md.fullname+" ("+md.username+") "+$scope.form.description+"\nIssue with pid: "+md.pid+"\nSumbited on "+date;
+    var notes = ""+md.fullname+" ("+md.username+") "+$scope.form.description.val+"\nIssue with pid: "+md.pid+"\nSumbited on "+date;
     createTask("52881378746895", ["1145870908001225"], title, username, notes)
   };
 
@@ -245,41 +256,25 @@ app.controller("AsanaCtrl", function($scope, $http ){
     return window.external.CurrentUserInfo?true:false;
   };
 
-  /*=======================================================================*
-  * Sets Listener for form
-  *========================================================================*/
-  $scope.Initlistener = function(){
-    window.addEventListener('load', function(){
-      // Fetch all the forms we want to apply custom Bootstrap validation styles to
-      var forms = document.getElementsByClassName('needs-validation');
-      // Loop over them and prevent submission
-      var validation = Array.prototype.filter.call(forms, function(form){
-        form.addEventListener('submit', function(event){
-          if (form.checkValidity() === false){
-            event.preventDefault();
-            event.stopPropagation();
-          }else{
-              $scope.submitTicket();
-              $scope.form.btnTxt = "Submitted!"
-              $scope.form.submitted=true;
-              try{$scope.$digest()}catch(e){}
-              setTimeout(function(){
-                $scope.form.show=false;
-                try{$scope.$digest()}catch(e){}
-              }, 5000);
-          }
-          form.classList.add('was-validated');
-        }, false);
-      });
-    }, false);
+  $scope.btnSubmit = function(){
+    $scope.submitTicket();
+    $scope.form.btn.val = "Submitted!"
+    $scope.form.btn.status=true;
+    $scope.form.success=true;
+    try{$scope.$digest()}catch(e){}
+    setTimeout(function(){
+      $scope.resetForm();
+      try{$scope.$digest()}catch(e){}
+      window.location.reload(true);
+    }, 5000);
   };
+
+
 
   /*=======================================================================*
   * JSON Gets on AngularJS INIT
   *========================================================================*/
   $scope.$watch('$viewContentLoaded', function(event){
-    $scope.Initlistener();
-
   });
 
   /*=======================================================================*

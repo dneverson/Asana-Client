@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+/*=========================================================================
+* @author Derry Everson
+*========================================================================*/
+-->
+<html lang="en" dir="ltr" ng-app="SampleApp">
+<head>
+  <title>Issue and Request Form</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=8,IE=9">
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="CACHE-CONTROL" content="NO-CACHE, no-store, must-revalidate">
+  <meta http-equiv="Expires" content="-1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../HtmlLibraries/bootstrap/4.2.1/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="../../HtmlLibraries/fontawesome/4.7.0/all.css"/>
+
+  <link rel="stylesheet" href="css/Asana.css">
+  <link rel="stylesheet" href="css/bootstrap-toggle.min.css">
+
+  <!-- JS -->
+  <script src="../../HtmlLibraries/jquery/js/3.3.1/jquery.min.js"></script>
+  <script src="../../HtmlLibraries/angularjs/1.7.8/angular.min.js"></script>
+  <script src="../../HtmlLibraries/popper/popper.min.js"></script>
+  <script src="../../HtmlLibraries/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+  <script src="../../HtmlLibraries/centricity/external_Functions.js"></script>
+  <script src="../../HtmlLibraries/centricity/MEL_Functions.js"></script>
+
+  <script src="js/SampleController.js"></script>
+    <!-- <script src="js/AsanaController.js"></script> -->
+  <script src="js/bootstrap-toggle.min.js"></script>
+
+</head>
+
+<body id="SampleCtrl" ng-controller="SampleCtrl">
+
+
+  <button type="button" class="btn btn-primary btn-xs inline" data-toggle="modal" data-target="#eModal">Tickets</button>
+
+
+
+
+  <!-- Modal -->
+  <div class="modal fade bd-example-modal-lg" id="eModal" tabindex="-1" role="dialog" aria-labelledby="eModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12">
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  -->
+
+</body>
+<div ng-controller="AsanaCtrl">
+  <div ng-include="'index.html'"></div>
+</div>
+
+</html>
