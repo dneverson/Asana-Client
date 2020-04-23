@@ -22,7 +22,7 @@ app.controller("AsanaCtrl", function($scope, $http ){
     url: "https://app.asana.com/api/1.0/",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer 0/7b572517147f260239215de94fba8a30",
+      "Authorization": "Bearer 0/00000000000000000",
       "Accept": "application/json"
     },
     data: {}
