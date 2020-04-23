@@ -16,7 +16,7 @@ Centricity EHR to Asana REST API ticketing solution, via AngularJS
 * CSS
 
 ## Version
-V1.0
+V1.1
 
 ## Authors
 * **Derry Everson**
